@@ -1,33 +1,29 @@
-﻿/* 
-    ------------------- Code Monkey -------------------
-
-    Thank you for downloading this package
-    I hope you find it useful in your projects
-    If you have any questions let me know
-    Cheers!
-
-               unitycodemonkey.com
-    --------------------------------------------------
- */
-
+﻿
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 可视的网格
+/// </summary>
 public class MovementTilemapVisual : MonoBehaviour {
 
+    /// <summary>
+    /// 格子结构体
+    /// </summary>
     [System.Serializable]
     public struct TilemapSpriteUV {
         public MovementTilemap.TilemapObject.TilemapSprite tilemapSprite;
         public Vector2Int uv00Pixels;
         public Vector2Int uv11Pixels;
     }
-
+    
     private struct UVCoords {
         public Vector2 uv00;
         public Vector2 uv11;
     }
 
+    // 格子数组
     [SerializeField] private TilemapSpriteUV[] tilemapSpriteUVArray;
     private GridXZ<MovementTilemap.TilemapObject> grid;
     private Mesh mesh;
@@ -39,11 +35,13 @@ public class MovementTilemapVisual : MonoBehaviour {
         GetComponent<MeshFilter>().mesh = mesh;
 
         Texture texture = GetComponent<MeshRenderer>().material.mainTexture;
+        // 1024
         float textureWidth = texture.width;
+        // 1024
         float textureHeight = texture.height;
-
         uvCoordsDictionary = new Dictionary<MovementTilemap.TilemapObject.TilemapSprite, UVCoords>();
 
+        // 启动时不执行
         foreach (TilemapSpriteUV tilemapSpriteUV in tilemapSpriteUVArray) {
             uvCoordsDictionary[tilemapSpriteUV.tilemapSprite] = new UVCoords {
                 uv00 = new Vector2(tilemapSpriteUV.uv00Pixels.x / textureWidth, tilemapSpriteUV.uv00Pixels.y / textureHeight),
@@ -74,10 +72,13 @@ public class MovementTilemapVisual : MonoBehaviour {
             UpdateTileMapVisual();
         }
     }
-
+    
+    /// <summary>
+    /// 更新网格UI
+    /// </summary>
     private void UpdateTileMapVisual() {
+        // 创建一个Mush
         MeshUtils.CreateEmptyMeshArrays(grid.GetWidth() * grid.GetHeight(), out Vector3[] vertices, out Vector2[] uv, out int[] triangles);
-
         for (int x = 0; x < grid.GetWidth(); x++) {
             for (int y = 0; y < grid.GetHeight(); y++) {
                 int index = x * grid.GetHeight() + y;

@@ -6,43 +6,73 @@ using CodeMonkey.Utils;
 using GridPathfindingSystem;
 using Cinemachine;
 
+/// <summary>
+/// 网格对战系统
+/// </summary>
 public class GameHandler_GridCombatSystem : MonoBehaviour {
 
     public static GameHandler_GridCombatSystem Instance { get; private set; }
 
+    /// <summary>
+    /// 相机更随的物体
+    /// </summary>
     [SerializeField] private Transform cinemachineFollowTransform;
+    /// <summary>
+    /// 可视化网格
+    /// </summary>
     [SerializeField] private MovementTilemapVisual movementTilemapVisual;
+    /// <summary>
+    /// 可视化相机
+    /// </summary>
     [SerializeField] private CinemachineVirtualCamera cinemachineVirtualCamera;
+    /// <summary>
+    /// 鼠标碰撞层级
+    /// </summary>
     [SerializeField] private LayerMask mouseColliderLayerMask;
+    /// <summary>
+    /// 鼠标的位置
+    /// </summary>
     [SerializeField] private Transform mouseVisualTransform;
-
+    /// <summary>
+    /// 网格中的所有物体
+    /// </summary>
     private GridXZ<GridCombatSystem.GridObject> grid;
+    /// <summary>
+    /// 更随角色移动的网格
+    /// </summary>
     private MovementTilemap movementTilemap;
+    /// <summary>
+    /// 网格寻路
+    /// </summary>
     public GridPathfinding gridPathfinding;
 
     private void Awake() {
         Instance = this;
-
-        int mapWidth = 40;
+        // 水平格子数
+        int mapWidth = 50;
+        // 竖直格子数
         int mapHeight = 25;
+        // 每个格子的大小
         float cellSize = 10f;
         Vector3 origin = new Vector3(0, 0);
 
+        // 数组初始化
         grid = new GridXZ<GridCombatSystem.GridObject>(
             mapWidth, mapHeight, cellSize, origin, 
             (GridXZ<GridCombatSystem.GridObject> g, int x, int y) => new GridCombatSystem.GridObject(g, x, y)
         );
 
+        // 寻路设置
         #region Pathfinding
         //gridPathfinding = new GridPathfinding(origin + new Vector3(1, 1) * cellSize * .5f, new Vector3(mapWidth, mapHeight) * cellSize, cellSize, GridPathfinding.Axis.XY);
         gridPathfinding = new GridPathfinding(origin + new Vector3(1, 0, 1) * cellSize * .5f, new Vector3(mapWidth, 0, mapHeight) * cellSize, cellSize, GridPathfinding.Axis.XZ);
         gridPathfinding.RaycastWalkable();
-        /*gridPathfinding.PrintMap((Vector3 vec, Vector3 size, Color color) => {
-            World_Sprite worldSprite = World_Sprite.Create(vec, size, color);
-            worldSprite.transform.eulerAngles = new Vector3(90, 0, 0);
-        });*/
+        // 输出地图
+//        gridPathfinding.PrintMap((Vector3 vec, Vector3 size, Color color) => {
+//            World_Sprite worldSprite = World_Sprite.Create(vec, size, color);
+//            worldSprite.transform.eulerAngles = new Vector3(90, 0, 0);
+//        });
         #endregion
-
         movementTilemap = new MovementTilemap(mapWidth, mapHeight, cellSize, origin);
     }
 
@@ -52,13 +82,16 @@ public class GameHandler_GridCombatSystem : MonoBehaviour {
 
     private void Update() {
         HandleCameraMovement();
-
+        // 鼠标处发射射线
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        // 如果鼠标移动到鼠标可以碰撞的地方，设置光标位置
         if (Physics.Raycast(ray, out RaycastHit raycastHit, 999f, mouseColliderLayerMask)) {
             mouseVisualTransform.position = raycastHit.point;
         }
     }
-
+    /// <summary>
+    /// 控制相机移动
+    /// </summary>
     private void HandleCameraMovement() {
         Vector3 moveDir = new Vector3(0, 0);
         if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow)) {

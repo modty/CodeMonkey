@@ -65,7 +65,13 @@ public static class MeshUtils {
         mesh.triangles = new int[0];
         return mesh;
     }
-
+	/// <summary>
+	/// 生成一个新的Mesh数组
+	/// </summary>
+	/// <param name="quadCount">网格数目</param>
+	/// <param name="vertices"></param>
+	/// <param name="uvs"></param>
+	/// <param name="triangles"></param>
     public static void CreateEmptyMeshArrays(int quadCount, out Vector3[] vertices, out Vector2[] uvs, out int[] triangles) {
 		vertices = new Vector3[4 * quadCount];
 		uvs = new Vector2[4 * quadCount];
