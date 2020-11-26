@@ -6,6 +6,9 @@ using GridPathfindingSystem;
 
 public class GridCombatSystem : MonoBehaviour {
 
+    /// <summary>
+    /// 战斗的四个对象
+    /// </summary>
     [SerializeField] private UnitGridCombat[] unitGridCombatArray;
 
     private State state;
@@ -16,7 +19,10 @@ public class GridCombatSystem : MonoBehaviour {
     private int redTeamActiveUnitIndex;
     private bool canMoveThisTurn;
     private bool canAttackThisTurn;
-
+    
+    /// <summary>
+    /// 状态
+    /// </summary>
     private enum State {
         Normal,
         Waiting

@@ -112,6 +112,10 @@ public class GameHandler_GridCombatSystem : MonoBehaviour {
         cinemachineFollowTransform.position += moveDir * moveSpeed * Time.deltaTime;
     }
 
+    /// <summary>
+    /// 获取鼠标的世界坐标（射线）
+    /// </summary>
+    /// <returns></returns>
     public Vector3 GetMouseWorldPosition() {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit raycastHit, 999f, mouseColliderLayerMask)) {
@@ -121,46 +125,56 @@ public class GameHandler_GridCombatSystem : MonoBehaviour {
         }
         return Vector3.zero;
     }
-
+    /// <summary>
+    /// 获取网格
+    /// </summary>
+    /// <returns></returns>
     public GridXZ<GridCombatSystem.GridObject> GetGrid() {
         return grid;
     }
-
+    /// <summary>
+    /// 获取更随角色移动的网格
+    /// </summary>
+    /// <returns></returns>
     public MovementTilemap GetMovementTilemap() {
         return movementTilemap;
     }
-
+    /// <summary>
+    /// 设置相机移动到的位置
+    /// </summary>
+    /// <param name="targetPosition"></param>
     public void SetCameraFollowPosition(Vector3 targetPosition) {
         cinemachineFollowTransform.position = targetPosition;
     }
 
+    /// <summary>
+    /// 屏幕抖动
+    /// </summary>
+    /// <returns></returns>
     public void ScreenShake() {
         CinemachineBasicMultiChannelPerlin cinemachineBasicMultiChannelPerlin = cinemachineVirtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
         cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = 1f;
-
         FunctionTimer.Create(() => { cinemachineBasicMultiChannelPerlin.m_AmplitudeGain = 0f; }, .1f);
     }
-
-
-
-
-
+    
+    /// <summary>
+    /// 没有物体的网格
+    /// </summary>
     public class EmptyGridObject {
 
         private Grid<EmptyGridObject> grid;
         private int x;
         private int y;
-
         public EmptyGridObject(Grid<EmptyGridObject> grid, int x, int y) {
             this.grid = grid;
             this.x = x;
             this.y = y;
-
+            // 设置网格的四个坐标
             Vector3 worldPos00 = grid.GetWorldPosition(x, y);
             Vector3 worldPos10 = grid.GetWorldPosition(x + 1, y);
             Vector3 worldPos01 = grid.GetWorldPosition(x, y + 1);
             Vector3 worldPos11 = grid.GetWorldPosition(x + 1, y + 1);
-
+            // 设置网格边缘颜色
             Debug.DrawLine(worldPos00, worldPos01, Color.white, 999f);
             Debug.DrawLine(worldPos00, worldPos10, Color.white, 999f);
             Debug.DrawLine(worldPos01, worldPos11, Color.white, 999f);
